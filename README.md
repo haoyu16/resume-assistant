@@ -1,13 +1,14 @@
 # Resume Writer Assistant
 
-Resume Writer is a Streamlit app for creating professional LaTeX/PDF resumes with sections for experience, education, certifications, and more. It features an easy-to-use UI, AI-powered content optimization, and supports saving/loading resume data.
+Resume Writer Assistant is an AI-powered tool that helps you create professional LaTeX/PDF resumes. It provides intelligent suggestions and optimizations while you maintain full control over your content. The app features an intuitive interface for inputting your experience, education, certifications, and other details, with AI guidance to help you present your qualifications more effectively.
 
 ## Features
-- Input personal information, skills, work experience, projects, education, and publications
-- Optional job description input for resume optimization
-- AI-powered content optimization
+- Interactive interface for inputting your personal information, skills, work experience, projects, education, and publications
+- AI-powered suggestions to help improve your content and presentation
+- Optional job description analysis to help tailor your resume to specific positions
+- Real-time feedback on your resume content
 - LaTeX resume generation with PDF preview
-- Built-in LaTeX editor support
+- Built-in LaTeX editor for fine-tuning
 
 ## Prerequisites
 - Python 3.8 or higher

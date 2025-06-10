@@ -1,0 +1,109 @@
+\documentclass[11pt,a4paper]{{article}}
+
+\usepackage[empty]{{fullpage}}
+\usepackage{{titlesec}}
+\usepackage{{marvosym}}
+\usepackage[usenames,dvipsnames]{{color}}
+\usepackage{{verbatim}}
+\usepackage{{enumitem}}
+\usepackage[hidelinks]{{hyperref}}
+\usepackage{{fancyhdr}}
+\usepackage[english]{{babel}}
+\usepackage{{tabularx}}
+\usepackage{{fontawesome5}}
+\usepackage{{multicol}}
+\usepackage{{graphicx}}
+\usepackage{{geometry}}
+
+% Adjust margins
+\geometry{{
+    top=1cm,
+    left=1cm,
+    right=1cm,
+    bottom=1cm,
+    includehead,
+    includefoot
+}}
+
+%----------FONT OPTIONS----------
+\usepackage[default]{{sourcesanspro}}
+\usepackage[T1]{{fontenc}}
+
+% Custom section fonts
+\titleformat{{\section}}{{\Large\scshape\raggedright}}{{}}{{0em}}{{}}[\titlerule]
+\titlespacing*{{\section}}{{0pt}}{{12pt}}{{8pt}}
+
+% Custom subsection fonts
+\titleformat{{\subsection}}{{\large\raggedright}}{{}}{{0em}}{{}}
+\titlespacing*{{\subsection}}{{0pt}}{{8pt}}{{4pt}}
+
+%----------CUSTOM COMMANDS----------
+\newcommand{{\resumeItem}}[1]{{
+  \item\small{{#1}}
+}}
+
+\newcommand{{\resumeSubheading}}[4]{{
+  \vspace{{-2pt}}\item
+    \begin{{tabular*}}{{\textwidth}}[t]{{l@{{\extracolsep{{\fill}}}}r}}
+      \textbf{{\large #1}} & #2 \\
+      \textit{{#3}} & \textit{{#4}} \\
+    \end{{tabular*}}\vspace{{-7pt}}
+}}
+
+\newcommand{{\resumeSubItem}}[1]{{\resumeItem{{#1}}\vspace{{-4pt}}}}
+\renewcommand\labelitemii{{$\vcenter{{\hbox{{\tiny$\bullet$}}}}$}}
+
+\newcommand{{\resumeSubHeadingListStart}}{{\begin{{itemize}}[leftmargin=0pt, label={{}}]}}
+\newcommand{{\resumeSubHeadingListEnd}}{{\end{{itemize}}}}
+\newcommand{{\resumeItemListStart}}{{\begin{{itemize}}[leftmargin=0pt]}}
+\newcommand{{\resumeItemListEnd}}{{\end{{itemize}}\vspace{{-5pt}}}}
+
+%----------DOCUMENT BEGIN----------
+\begin{{document}}
+
+%----------HEADING----------
+\begin{{center}}
+    {{\Huge \scshape {name}}} \\ \vspace{{1pt}}
+    \small
+    \faIcon{{envelope}} \href{{mailto:{email}}}{{{email}}} $|$ 
+    \faIcon{{phone}} {phone} $|$
+    \faIcon{{map-marker-alt}} {location} $|$
+    \faIcon{{linkedin}} \href{{{linkedin}}}{{LinkedIn}}
+    {additional_links}
+\end{{center}}
+
+%----------SUMMARY----------
+\section{{Summary}}
+{summary}
+
+%----------SKILLS----------
+\section{{Skills}}
+\noindent {skills}
+
+%----------EXPERIENCE----------
+\section{{Experience}}
+\renewcommand{{\labelitemi}}{{}}
+\newcommand{{\resumeSubHeadingListStart}}{{\begin{{itemize}}[leftmargin=1pt, label={{}}]}}
+\newcommand{{\resumeSubHeadingListEnd}}{{\end{{itemize}}}}
+\newcommand{{\resumeItemListStart}}{{\begin{{itemize}}[leftmargin=1pt]}}
+\newcommand{{\resumeItemListEnd}}{{\end{{itemize}}\vspace{{-5pt}}}}
+\resumeSubHeadingListStart
+{experience}
+\resumeSubHeadingListEnd
+
+%----------PROJECTS----------
+{projects}
+
+%----------EDUCATION----------
+\section{{Education}}
+\resumeSubHeadingListStart
+{education}
+\resumeSubHeadingListEnd
+
+%----------CERTIFICATIONS----------
+{certifications_section}
+
+%----------PUBLICATIONS----------
+{publications_section}
+
+\end{{document}} 

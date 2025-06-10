@@ -1,6 +1,6 @@
 # Resume Writer Assistant
 
-An AI-powered resume writer that helps create professional LaTeX resumes optimized for specific job requirements.
+Resume Writer is a Streamlit app for creating professional LaTeX/PDF resumes with sections for experience, education, certifications, and more. It features an easy-to-use UI, AI-powered content optimization, and supports saving/loading resume data.
 
 ## Features
 - Input personal information, skills, work experience, projects, education, and publications
@@ -37,11 +37,14 @@ An AI-powered resume writer that helps create professional LaTeX resumes optimiz
 Note: Always run the application from the project root directory to ensure proper module imports.
 
 ## Usage
-1. Fill in your personal information, skills, work experience, and other details
-2. Optionally paste the job description you're applying for
-3. Click "Generate Resume" to create your LaTeX resume
-4. Preview the generated PDF
-5. Edit the LaTeX source if needed
+1. Fill in your personal information, skills, work experience, education, certifications, and other details.
+2. Optionally paste the job description for the position you're targeting.
+3. Choose how to generate your resume:
+   - **Generate Basic Resume (No LLM Feedback):** Uses your original content only.
+   - **Generate Basic Resume (With LLM Feedback):** Adds AI-powered quality check and suggestions.
+   - **Generate Optimized Resume (LaTeX):** Optimizes your content for the target job using AI.
+4. Download the generated LaTeX and PDF files.
+5. (Optional) Edit the LaTeX source if further customization is needed.
 
 ## Output
 - Generated LaTeX files are stored in the `output` directory

@@ -86,8 +86,8 @@ def format_experience(company: str, role: str, dates: str, location: str, projec
     role_line = f"\\textit{{{role}}} \\hfill {dates}"
 
     return f"""\item
-    \n {company_line} \\
-    \n {role_line} \\\\ \\vspace{{2pt}}
+    \n {company_line} \\ \\vspace{{-2pt}}
+    \n {role_line} \\\\ 
     {projects_section}
     """
 

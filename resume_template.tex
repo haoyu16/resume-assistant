@@ -31,11 +31,11 @@
 
 % Custom section fonts
 \titleformat{{\section}}{{\Large\scshape\raggedright}}{{}}{{0em}}{{}}[\titlerule]
-\titlespacing*{{\section}}{{0pt}}{{12pt}}{{8pt}}
+\titlespacing*{{\section}}{{0pt}}{{4pt}}{{3pt}}
 
 % Custom subsection fonts
 \titleformat{{\subsection}}{{\large\raggedright}}{{}}{{0em}}{{}}
-\titlespacing*{{\subsection}}{{0pt}}{{8pt}}{{4pt}}
+\titlespacing*{{\subsection}}{{0pt}}{{4pt}}{{2pt}}
 
 %----------CUSTOM COMMANDS----------
 \newcommand{{\resumeItem}}[1]{{
@@ -47,10 +47,10 @@
     \begin{{tabular*}}{{\textwidth}}[t]{{l@{{\extracolsep{{\fill}}}}r}}
       \textbf{{\large #1}} & #2 \\
       \textit{{#3}} & \textit{{#4}} \\
-    \end{{tabular*}}\vspace{{-7pt}}
+    \end{{tabular*}}\vspace{{-9pt}}
 }}
 
-\newcommand{{\resumeSubItem}}[1]{{\resumeItem{{#1}}\vspace{{-4pt}}}}
+\newcommand{{\resumeSubItem}}[1]{{\resumeItem{{#1}}\vspace{{-2pt}}}}
 \renewcommand\labelitemii{{$\vcenter{{\hbox{{\tiny$\bullet$}}}}$}}
 
 \newcommand{{\resumeSubHeadingListStart}}{{\begin{{itemize}}[leftmargin=0pt, label={{}}]}}
@@ -63,17 +63,17 @@
 
 %----------HEADING----------
 \begin{{center}}
-    {{\Huge \scshape {name}}} \\ \vspace{{1pt}}
+    {{\Huge \scshape {name}}} \\ \vspace{{3pt}}
     \small
     \faIcon{{envelope}} \href{{mailto:{email}}}{{{email}}} $|$ 
     \faIcon{{phone}} {phone} $|$
     \faIcon{{map-marker-alt}} {location} $|$
     \faIcon{{linkedin}} \href{{{linkedin}}}{{LinkedIn}}
     {additional_links}
-\end{{center}}
+\end{{center}}\vspace{{-8pt}}
 
 %----------SUMMARY----------
-\section{{Summary}}
+\section{{About Me}}
 {summary}
 
 %----------SKILLS----------
@@ -82,7 +82,6 @@
 
 %----------EXPERIENCE----------
 \section{{Experience}}
-\renewcommand{{\labelitemi}}{{}}
 \resumeSubHeadingListStart
 {experience}
 \resumeSubHeadingListEnd

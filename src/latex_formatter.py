@@ -81,12 +81,13 @@ def format_experience(company: str, role: str, dates: str, location: str, projec
             project_parts.append(project_str)
         projects_section = "\n".join(project_parts)
 
-    # Combine the heading and the projects section inside a single item
-    return f"""\\item
-    \\begin{{tabular*}}{{\\textwidth}}[t]{{l@{{\\extracolsep{{\\fill}}}}r}}
-      \\textbf{{\\large {company}}} & {dates} \\\\
-      \\textit{{{role}}} & \\textit{{{location}}}
-    \\end{{tabular*}}
+    # Use \hfill for left/right alignment for company/location and role/dates
+    company_line = f"\\textbf{{\\large {company}}} \\hfill {location}"
+    role_line = f"\\textit{{{role}}} \\hfill {dates}"
+
+    return f"""\item
+    \n {company_line} \\
+    \n {role_line} \\\\ \\vspace{{2pt}}
     {projects_section}
     """
 
@@ -123,17 +124,28 @@ def format_project(name: str, technologies: str, dates: str, description: str) -
 
 def format_education(school: str, degree: str, dates: str, location: Optional[str] = None, gpa: Optional[str] = None) -> str:
     """
-    Format education section in LaTeX as a single row: school on the left, degree, location (optional), and date on the right. GPA omitted.
+    Format education section in LaTeX as a single line with separators.
+    Format: Degree | School | Location | GPA | Dates
     """
     school = escape_latex(school)
     degree = escape_latex(degree)
     dates = escape_latex(dates)
-    location = escape_latex(location) if location else None
-    right_col = f"{degree}, {location}, {dates}" if location else f"{degree}, {dates}"
-    return f"""\\item
-\\begin{{tabular*}}{{\\textwidth}}[t]{{l@{{\\extracolsep{{\\fill}}}}r}}
-  {{{school}}} & {right_col} \\
-\\end{{tabular*}}
+    location = escape_latex(location) if location else ""
+    gpa = f"GPA {escape_latex(gpa)}" if gpa else ""
+    
+    # Build the parts list, filtering out empty values
+    parts = [degree, f"\\textbf{{{school}}}"]  # Make school name bold
+    if location:
+        parts.append(location)
+    if gpa:
+        parts.append(gpa)
+    parts.append(dates)
+    
+    # Join all non-empty parts with separators
+    education_line = " $|$ ".join(part for part in parts if part)
+    
+    return f"""\\vspace{{0pt}}\\item
+{education_line}\\vspace{{-4pt}}
 """
 
 def format_publications(publications: List[str]) -> str:
@@ -188,9 +200,7 @@ def format_certifications(certifications: List[Dict[str, str]]) -> str:
         issued = escape_latex(cert['issued'])
         expires = escape_latex(cert['expires']) if cert.get('expires') else ""
         date_range = f"{issued} - {expires}" if expires else issued
-        cert_lines.append(
-            f"\\item\n\\begin{{tabular*}}{{\\textwidth}}[t]{{l@{{\\extracolsep{{\\fill}}}}r}}\n"
-            f"  {{{name}}} & {date_range} \\\\"
-            f"\\end{{tabular*}}"
-        )
-    return "\\section{Certifications}\n\\begin{itemize}[leftmargin=0pt]\n" + "\n".join(cert_lines) + "\n\\end{itemize}" 
+        # Use \hfill for left/right alignment
+        cert_line = f"{name} \\hfill {date_range}" if date_range else name
+        cert_lines.append(f"\\item\n\n {cert_line}")
+    return "\\section{Certifications}\n\\resumeSubHeadingListStart\n" + "\n".join(cert_lines) + "\n\\resumeSubHeadingListEnd" 

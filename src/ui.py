@@ -11,6 +11,26 @@ class ResumeUI:
         self.forms_dir = Path("resume_json")
         self.forms_dir.mkdir(exist_ok=True)
         
+    def format_phone_number(self, phone: str) -> str:
+        """Format phone number as xxx-xxx-xxxx."""
+        # Remove all non-digit characters
+        digits = ''.join(filter(str.isdigit, phone))
+        
+        # Format as xxx-xxx-xxxx if we have enough digits
+        if len(digits) >= 10:
+            return f"{digits[:3]}-{digits[3:6]}-{digits[6:10]}"
+        return phone
+        
+    def on_phone_change(self):
+        """Callback for phone number input changes."""
+        if 'phone' in st.session_state:
+            digits = ''.join(filter(str.isdigit, st.session_state.phone))
+            if len(digits) == 10:
+                st.session_state.phone = self.format_phone_number(st.session_state.phone)
+                st.session_state.phone_error = ''
+            else:
+                st.session_state.phone_error = 'Phone number must be exactly 10 digits.'
+        
     def load_saved_form(self) -> Optional[Dict]:
         """Load a previously saved form."""
         st.sidebar.header("📂 Resume Management")
@@ -81,7 +101,21 @@ class ResumeUI:
         with col1:
             name = st.text_input("Full Name", value=loaded_data.get('name', '') if loaded_data else '')
             email = st.text_input("Email", value=loaded_data.get('email', '') if loaded_data else '')
-            phone = st.text_input("Phone", value=loaded_data.get('phone', '') if loaded_data else '')
+            phone = st.text_input(
+                "Phone",
+                value=loaded_data.get('phone', '') if loaded_data else '',
+                key='phone',
+                on_change=self.on_phone_change
+            )
+            phone_error = st.session_state.get('phone_error', '')
+            if phone_error:
+                st.error(phone_error)
+            # Only save valid phone number
+            digits = ''.join(filter(str.isdigit, phone))
+            if len(digits) == 10:
+                phone = self.format_phone_number(phone)
+            else:
+                phone = ''
         with col2:
             location = st.text_input("Location", value=loaded_data.get('location', '') if loaded_data else '')
             linkedin = st.text_input("LinkedIn Profile URL", value=loaded_data.get('linkedin', '') if loaded_data else '')

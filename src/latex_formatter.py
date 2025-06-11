@@ -29,7 +29,7 @@ def escape_latex(text):
     return pattern.sub(replacer, text)
 
 def format_skills(skills_text: str) -> str:
-    """Formats the skills section, highlighting categories, as a single paragraph."""
+    """Formats the skills section as a bulleted list with bold categories."""
     if not skills_text:
         return ""
     
@@ -40,11 +40,12 @@ def format_skills(skills_text: str) -> str:
             parts = line.split(':', 1)
             category = escape_latex(parts[0].strip())
             skills = escape_latex(parts[1].strip())
-            formatted_parts.append(f"\\textbf{{{category}:}} {skills}")
+            formatted_parts.append(f"\\item[•] \\textbf{{{category}:}} {skills}")
         elif line:
-            formatted_parts.append(escape_latex(line))
-    # Join all with \quad for spacing
-    return ' \\quad '.join(formatted_parts)
+            formatted_parts.append(f"\\item[•] {escape_latex(line)}")
+    
+    # Wrap in itemize environment with reduced spacing
+    return "\\begin{itemize}[leftmargin=*, topsep=0pt, itemsep=0pt, parsep=0pt]\n" + "\n".join(formatted_parts) + "\n\\end{itemize}"
 
 def format_experience(company: str, role: str, dates: str, location: str, projects: List[Dict[str, str]] = None) -> str:
     """
@@ -73,7 +74,7 @@ def format_experience(company: str, role: str, dates: str, location: str, projec
                 if any(bullet.strip() for bullet in project_bullets):
                     # Use a new itemize environment with a specific left margin for indentation
                     # topsep controls space before the list, itemsep between items
-                    project_str += "\n\\begin{itemize}[leftmargin=15pt, label={$\\ast$}, topsep=0pt, itemsep=0pt]"
+                    project_str += "\n\\begin{itemize}[leftmargin=15pt, label={\\textbullet}, topsep=0pt, itemsep=0pt]"
                     for bullet in project_bullets:
                         if bullet.strip():
                             project_str += f"\n\\resumeItem{{{escape_latex(bullet.strip())}}}"

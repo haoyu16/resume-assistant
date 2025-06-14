@@ -11,6 +11,12 @@ class ResumeUI:
         self.forms_dir = Path("resume_json")
         self.forms_dir.mkdir(exist_ok=True)
         
+        # Initialize session state variables if they don't exist
+        if 'current_resume_name' not in st.session_state:
+            st.session_state.current_resume_name = None
+        if 'is_new_resume' not in st.session_state:
+            st.session_state.is_new_resume = True
+        
     def format_phone_number(self, phone: str) -> str:
         """Format phone number as xxx-xxx-xxxx."""
         # Remove all non-digit characters
@@ -56,6 +62,8 @@ class ResumeUI:
             try:
                 with open(self.forms_dir / f"{selected_form}.json", 'r') as f:
                     data = json.load(f)
+                st.session_state.current_resume_name = selected_form
+                st.session_state.is_new_resume = False
                 st.sidebar.success(f"✅ Loaded: {selected_form}")
                 return data
             except Exception as e:
@@ -64,29 +72,83 @@ class ResumeUI:
         
     def save_current_form(self, data: Dict):
         """Save the current form data."""
-        st.sidebar.subheader("💾 Save Form Data (JSON)")
-        st.sidebar.markdown("""
-        Save your form data as JSON to load it later.
-        This saves all your input data, not the final resume.
-        """)
-        filename = st.sidebar.text_input(
-            "Enter a name for this form data",
-            help="Your form data will be saved as 'name.json' in the resume_json folder for later use"
-        )
+        st.sidebar.subheader("💾 Save Resume")
         
-        if filename and st.sidebar.button("Save Form Data (JSON)"):
-            file_path = self.forms_dir / f"{filename}.json"
-            if file_path.exists():
-                overwrite = st.sidebar.warning(
-                    f"'{filename}.json' already exists. Click again to overwrite.",
-                    button="Overwrite"
+        # Display current resume name if it exists
+        if st.session_state.current_resume_name:
+            st.sidebar.info(f"Current Resume: {st.session_state.current_resume_name}")
+        
+        # Save button - uses current name or prompts for new name
+        if st.sidebar.button("Save"):
+            if not st.session_state.current_resume_name:
+                filename = st.sidebar.text_input(
+                    "Enter a name for this resume",
+                    help="Your resume will be saved as 'name.json' in the resume_json folder"
                 )
-                if not overwrite:
+                if not filename:
+                    st.sidebar.warning("Please enter a name for the resume")
                     return
-                    
-            with open(file_path, 'w') as f:
-                json.dump(data, f, indent=2)
-            st.sidebar.success(f"Form data saved as '{filename}.json'")
+                st.session_state.current_resume_name = filename
+                st.session_state.is_new_resume = False
+            self._save_resume(data, st.session_state.current_resume_name)
+        
+        # Save As button - always prompts for new name
+        if st.sidebar.button("Save As"):
+            filename = st.sidebar.text_input(
+                "Enter a new name for this resume",
+                help="Your resume will be saved as 'name.json' in the resume_json folder"
+            )
+            if not filename:
+                st.sidebar.warning("Please enter a name for the resume")
+                return
+            st.session_state.current_resume_name = filename
+            st.session_state.is_new_resume = False
+            self._save_resume(data, filename)
+    
+    def _save_resume(self, data: Dict, filename: str):
+        """Internal method to save resume data."""
+        file_path = self.forms_dir / f"{filename}.json"
+        if file_path.exists() and st.session_state.is_new_resume:
+            overwrite = st.sidebar.warning(
+                f"'{filename}.json' already exists. Click again to overwrite.",
+                button="Overwrite"
+            )
+            if not overwrite:
+                return
+                
+        with open(file_path, 'w') as f:
+            json.dump(data, f, indent=2)
+        st.sidebar.success(f"Resume saved as '{filename}.json'")
+        
+        # Save last used resume name
+        with open(self.forms_dir / "last_used.txt", 'w') as f:
+            f.write(filename)
+
+    def load_last_used_resume(self) -> Optional[Dict]:
+        """Load the last used resume."""
+        last_used_file = self.forms_dir / "last_used.txt"
+        if last_used_file.exists():
+            try:
+                with open(last_used_file, 'r') as f:
+                    last_used = f.read().strip()
+                if last_used:
+                    resume_file = self.forms_dir / f"{last_used}.json"
+                    if resume_file.exists():
+                        with open(resume_file, 'r') as f:
+                            data = json.load(f)
+                        st.session_state.current_resume_name = last_used
+                        st.session_state.is_new_resume = False
+                        return data
+            except Exception as e:
+                st.error(f"Error loading last used resume: {str(e)}")
+        return None
+    
+    def display_current_resume_name(self):
+        """Display the current resume name in the main UI area."""
+        if st.session_state.current_resume_name:
+            st.info(f"📄 Current Resume: {st.session_state.current_resume_name}")
+        else:
+            st.info("📄 New Resume (Unsaved)")
     
     def collect_personal_info(self, loaded_data: Optional[Dict] = None) -> Dict[str, str]:
         """
@@ -95,6 +157,9 @@ class ResumeUI:
         Args:
             loaded_data (Optional[Dict]): Pre-loaded data to fill the form
         """
+        # Display current resume name at the top
+        self.display_current_resume_name()
+        
         st.header("Personal Information")
         col1, col2 = st.columns(2)
         
@@ -364,25 +429,4 @@ class ResumeUI:
             bool: True if all required fields are filled, False otherwise
         """
         required_fields = ['name', 'email', 'phone', 'location', 'linkedin', 'summary', 'skills', 'experience', 'education']
-        return all(data.get(field) for field in required_fields)
-
-    def save_form_to_disk(self, data: Dict):
-        """Save the form data to a local file."""
-        if st.sidebar.button("Save Form to Disk"):
-            file_path = self.forms_dir / "last_session.json"
-            with open(file_path, 'w') as f:
-                json.dump(data, f, indent=2)
-            st.sidebar.success("Form data saved to disk.")
-
-    def load_form_from_disk(self) -> Optional[Dict]:
-        """Load the form data from a local file."""
-        file_path = self.forms_dir / "last_session.json"
-        if file_path.exists():
-            try:
-                with open(file_path, 'r') as f:
-                    data = json.load(f)
-                st.sidebar.success("Form data loaded from disk.")
-                return data
-            except Exception as e:
-                st.sidebar.error(f"Error loading form data: {str(e)}")
-        return None 
+        return all(data.get(field) for field in required_fields) 

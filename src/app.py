@@ -52,10 +52,12 @@ def main():
         quality_checker_config=quality_checker_config
     )
     
-    # Try to load last session first
-    last_session_data = ui.load_form_from_disk()
-    # If user loads a named form, it will override last_session_data
-    saved_data = ui.load_saved_form() or last_session_data
+    # Try to load last used resume first
+    saved_data = ui.load_last_used_resume()
+    # If user loads a different resume, it will override saved_data
+    user_selected_data = ui.load_saved_form()
+    if user_selected_data:
+        saved_data = user_selected_data
     
     # Collect all resume data
     personal_info = ui.collect_personal_info(saved_data)
@@ -81,16 +83,8 @@ def main():
         'target_info': target_info
     }
     
-    # Add save form option (named save/load)
+    # Add save options
     ui.save_current_form(data)
-    # Add Save Progress button for last session auto-resume
-    ui.save_form_to_disk(data)
-    
-    # Add filename input
-    resume_filename = st.text_input(
-        "Resume filename (optional)",
-        help="Enter a name for your resume file. If left empty, a timestamp will be used."
-    )
 
     st.markdown("### 📄 Generate Resume (LaTeX & PDF)")
     st.markdown("""
@@ -128,8 +122,10 @@ def main():
                 import os
                 from datetime import datetime
                 os.makedirs('output', exist_ok=True)
-                if resume_filename:
-                    safe_filename = "".join(c for c in resume_filename if c.isalnum() or c in ('-', '_')).strip()
+                # Use current resume name or timestamp for folder name
+                resume_name = st.session_state.get('current_resume_name')
+                if resume_name:
+                    safe_filename = "".join(c for c in resume_name if c.isalnum() or c in ('-', '_')).strip()
                     folder_name = f"resume_{safe_filename}" if safe_filename else f"resume_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
                 else:
                     folder_name = f"resume_{datetime.now().strftime('%Y%m%d_%H%M%S')}"

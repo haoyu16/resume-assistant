@@ -16,6 +16,8 @@ Resume Writer Assistant is an AI-powered tool that helps you create professional
 - OpenAI API key
 
 ## Setup
+
+### Option 1: Local Installation
 1. Clone this repository
 2. Install dependencies:
    ```bash
@@ -33,6 +35,37 @@ Resume Writer Assistant is an AI-powered tool that helps you create professional
 5. Run the application (from the project root directory):
    ```bash
    streamlit run src/app.py
+   ```
+
+### Option 2: Docker
+1. Clone this repository
+2. Make sure you have Docker and Docker Compose installed
+3. Set your OpenAI API key:
+   ```bash
+   export OPENAI_API_KEY=your_api_key_here
+   ```
+4. Build and run the Docker container:
+   ```bash
+   docker-compose up -d
+   ```
+5. Access the application at http://localhost:8501
+
+To stop the Docker container:
+```bash
+docker-compose down
+```
+
+### Development with Docker
+If you want to develop the application while using Docker:
+
+1. Build the image:
+   ```bash
+   docker build -t resume-writer .
+   ```
+
+2. Run the container with source code mounted as a volume:
+   ```bash
+   docker run -p 8501:8501 -v $(pwd):/app -e OPENAI_API_KEY=your_api_key_here resume-writer
    ```
 
 Note: Always run the application from the project root directory to ensure proper module imports.

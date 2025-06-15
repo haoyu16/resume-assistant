@@ -4,6 +4,7 @@ from typing import Dict, List, Optional
 import os
 import json
 from pathlib import Path
+import datetime
 
 class ResumeUI:
     def __init__(self):
@@ -92,18 +93,27 @@ class ResumeUI:
                 st.session_state.is_new_resume = False
             self._save_resume(data, st.session_state.current_resume_name)
         
-        # Save As button - always prompts for new name
-        if st.sidebar.button("Save As"):
-            filename = st.sidebar.text_input(
+        # Save As functionality using a form
+        if 'save_as_name' not in st.session_state:
+            st.session_state.save_as_name = ''
+        with st.sidebar.form("save_as_form"):
+            st.write("Save As")
+            filename = st.text_input(
                 "Enter a new name for this resume",
+                value=st.session_state.save_as_name,
+                key="save_as_name",
                 help="Your resume will be saved as 'name.json' in the resume_json folder"
             )
-            if not filename:
-                st.sidebar.warning("Please enter a name for the resume")
-                return
-            st.session_state.current_resume_name = filename
-            st.session_state.is_new_resume = False
-            self._save_resume(data, filename)
+            save_as_submitted = st.form_submit_button("Save As")
+            
+            if save_as_submitted:
+                if not filename:
+                    st.warning("Please enter a name for the resume")
+                else:
+                    st.session_state.current_resume_name = filename
+                    st.session_state.is_new_resume = False
+                    self._save_resume(data, filename)
+                    st.session_state.save_as_name = ''  # Clear after save
     
     def _save_resume(self, data: Dict, filename: str):
         """Internal method to save resume data."""

@@ -122,16 +122,19 @@ def main():
                 import os
                 from datetime import datetime
                 os.makedirs('output', exist_ok=True)
-                # Use current resume name or timestamp for folder name
+                # Use current resume name plus timestamp for folder name
                 resume_name = st.session_state.get('current_resume_name')
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
                 if resume_name:
                     safe_filename = "".join(c for c in resume_name if c.isalnum() or c in ('-', '_')).strip()
-                    folder_name = f"resume_{safe_filename}" if safe_filename else f"resume_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                    folder_name = f"{safe_filename}_{timestamp}" if safe_filename else f"resume_{timestamp}"
+                    file_base = safe_filename if safe_filename else f"resume"
                 else:
-                    folder_name = f"resume_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                    folder_name = f"resume_{timestamp}"
+                    file_base = "resume"
                 output_folder = os.path.join('output', folder_name)
                 os.makedirs(output_folder, exist_ok=True)
-                base_filename = os.path.join(output_folder, "resume")
+                base_filename = os.path.join(output_folder, file_base)
                 tex_file = f"{base_filename}.tex"
                 with open(tex_file, 'w') as f:
                     f.write(latex_content)

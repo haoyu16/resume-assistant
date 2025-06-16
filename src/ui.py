@@ -263,7 +263,7 @@ class ResumeUI:
     def collect_summary(self, loaded_data: Optional[Dict] = None) -> str:
         """Collect professional summary."""
         st.header("Professional Summary")
-        return st.text_area("Summary", value=loaded_data.get('summary', '') if loaded_data else '')
+        return st.text_area("Summary", value=loaded_data.get('summary', '') if loaded_data else '', height=150)
     
     def collect_skills(self, loaded_data: Optional[Dict] = None) -> str:
         """Collect skills."""
@@ -275,7 +275,7 @@ class ResumeUI:
         Another Category: Skill4, Skill5
         ```
         """)
-        return st.text_area("Skills", value=loaded_data.get('skills', '') if loaded_data else '')
+        return st.text_area("Skills", value=loaded_data.get('skills', '') if loaded_data else '', height=150)
     
     def collect_experience(self, loaded_data: Optional[Dict] = None) -> List[Dict[str, str]]:
         """Collect work experience."""
@@ -315,7 +315,8 @@ class ResumeUI:
                 project_description = st.text_area(
                     f"Project Description {j+1}",
                     value=loaded_proj.get('description', '') if loaded_proj else '',
-                    key=f"exp{i}_proj{j}_desc"
+                    key=f"exp{i}_proj{j}_desc",
+                    height=200
                 )
                 if project_title:
                     projects.append({

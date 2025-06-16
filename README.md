@@ -1,6 +1,6 @@
-# Resume Writer Assistant
+# Resume Assistant
 
-Resume Writer Assistant is an AI-powered tool that helps you create professional LaTeX/PDF resumes. It provides intelligent suggestions and optimizations while you maintain full control over your content. The app features an intuitive interface for inputting your experience, education, certifications, and other details, with AI guidance to help you present your qualifications more effectively.
+Resume Assistant is an AI-powered tool that helps you create professional LaTeX/PDF resumes. It provides intelligent suggestions and optimizations while you maintain full control over your content. The app features an intuitive interface for inputting your experience, education, certifications, and other details, with AI guidance to help you present your qualifications more effectively.
 
 ## Features
 - Interactive interface for inputting your personal information, skills, work experience, projects, education, and publications
@@ -60,12 +60,12 @@ If you want to develop the application while using Docker:
 
 1. Build the image:
    ```bash
-   docker build -t resume-writer .
+   docker build -t resume-assistant .
    ```
 
 2. Run the container with source code mounted as a volume:
    ```bash
-   docker run -p 8501:8501 -v $(pwd):/app -e OPENAI_API_KEY=your_api_key_here resume-writer
+   docker run -p 8501:8501 -v $(pwd):/app -e OPENAI_API_KEY=your_api_key_here resume-assistant
    ```
 
 Note: Always run the application from the project root directory to ensure proper module imports.

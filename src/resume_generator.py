@@ -141,15 +141,24 @@ class ResumeGenerator:
         if linkedin_url and not linkedin_url.startswith(('http://', 'https://')):
             linkedin_url = 'https://' + linkedin_url.lstrip('/ ')
 
+        # Citizenship status for contact info
+        citizenship = data.get('citizenship_status', '').strip()
+        if citizenship:
+            citizenship = escape_latex(citizenship)
+            citizenship = f"$|$ {citizenship} "
+        else:
+            citizenship = ''
+
         # Replace placeholders in template
         resume = template.format(
             name=data['name'],
             email=data['email'],
             phone=data['phone'],
             location=data['location'],
+            citizenship=citizenship,
             linkedin=linkedin_url,  # Use the fixed URL
             additional_links=additional_links,
-            summary=escape_latex(summary),
+            summary=summary,
             skills=skills,
             experience='\n'.join(experiences),
             projects=projects_section,

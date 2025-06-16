@@ -146,7 +146,7 @@ def format_education(school: str, degree: str, dates: str, location: Optional[st
     education_line = " $|$ ".join(part for part in parts if part)
     
     return f"""\\vspace{{0pt}}\\item
-{education_line}\\vspace{{-4pt}}
+{education_line}\\vspace{{-6pt}}
 """
 
 def format_publications(publications: List[str]) -> str:

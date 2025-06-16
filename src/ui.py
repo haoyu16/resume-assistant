@@ -196,7 +196,18 @@ class ResumeUI:
             linkedin = st.text_input("LinkedIn Profile URL", value=loaded_data.get('linkedin', '') if loaded_data else '')
             github = st.text_input("GitHub Profile URL (optional)", value=loaded_data.get('github', '') if loaded_data else '')
         portfolio = st.text_input("Portfolio Website (optional)", value=loaded_data.get('portfolio', '') if loaded_data else '')
-        
+
+        # Citizenship status (optional)
+        citizenship_options = ['', 'U.S. Citizen', 'Green Card Holder', 'Other (specify below)']
+        citizenship_status = st.selectbox(
+            "Citizenship/Work Authorization Status (optional)",
+            citizenship_options,
+            index=citizenship_options.index(loaded_data.get('citizenship_status', '')) if loaded_data and loaded_data.get('citizenship_status', '') in citizenship_options else 0
+        )
+        custom_citizenship = ''
+        if citizenship_status == 'Other (specify below)':
+            custom_citizenship = st.text_input("Please specify your status", value=loaded_data.get('custom_citizenship', '') if loaded_data else '')
+
         return {
             'name': name,
             'email': email,
@@ -204,7 +215,9 @@ class ResumeUI:
             'location': location,
             'linkedin': linkedin,
             'github': github,
-            'portfolio': portfolio
+            'portfolio': portfolio,
+            'citizenship_status': custom_citizenship if citizenship_status == 'Other (specify below)' else citizenship_status,
+            'custom_citizenship': custom_citizenship if citizenship_status == 'Other (specify below)' else ''
         }
     
     def collect_summary(self, loaded_data: Optional[Dict] = None) -> str:

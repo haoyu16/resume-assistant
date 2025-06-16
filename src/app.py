@@ -59,6 +59,9 @@ def main():
     if user_selected_data:
         saved_data = user_selected_data
     
+    # Add delete resume UI
+    ui.delete_resume_ui()
+    
     # Collect all resume data
     personal_info = ui.collect_personal_info(saved_data)
     summary = ui.collect_summary(saved_data)

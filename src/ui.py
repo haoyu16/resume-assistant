@@ -70,6 +70,50 @@ class ResumeUI:
             except Exception as e:
                 st.sidebar.error(f"Error loading resume: {str(e)}")
         return None
+
+    def delete_resume_ui(self):
+        """Display UI for deleting resumes."""
+        st.sidebar.subheader("🗑️ Delete Resume")
+        saved_forms = [f.stem for f in self.forms_dir.glob("*.json")]
+        
+        if not saved_forms:
+            st.sidebar.info("No saved resumes found to delete")
+            return
+            
+        selected_form = st.sidebar.selectbox(
+            "Choose a resume to delete",
+            [""] + sorted(saved_forms),
+            format_func=lambda x: "Select a resume..." if x == "" else x,
+            key="delete_resume_select"
+        )
+        
+        if selected_form:
+            if selected_form == st.session_state.current_resume_name:
+                st.sidebar.warning("⚠️ Cannot delete the currently loaded resume. Please load a different resume first.")
+            else:
+                if st.sidebar.button("Delete Selected Resume", type="secondary"):
+                    self.delete_resume(selected_form)
+                    st.rerun()
+
+    def delete_resume(self, resume_name: str):
+        """Delete a saved resume."""
+        try:
+            # Delete the JSON file
+            json_file = self.forms_dir / f"{resume_name}.json"
+            if json_file.exists():
+                json_file.unlink()
+                
+            # If this was the last used resume, clear the last_used.txt file
+            last_used_file = self.forms_dir / "last_used.txt"
+            if last_used_file.exists():
+                with open(last_used_file, 'r') as f:
+                    last_used = f.read().strip()
+                if last_used == resume_name:
+                    last_used_file.unlink()
+            
+            st.sidebar.success(f"✅ Deleted resume: {resume_name}")
+        except Exception as e:
+            st.sidebar.error(f"Error deleting resume: {str(e)}")
         
     def save_current_form(self, data: Dict):
         """Save the current form data."""
@@ -94,13 +138,10 @@ class ResumeUI:
             self._save_resume(data, st.session_state.current_resume_name)
         
         # Save As functionality using a form
-        if 'save_as_name' not in st.session_state:
-            st.session_state.save_as_name = ''
         with st.sidebar.form("save_as_form"):
             st.write("Save As")
             filename = st.text_input(
                 "Enter a new name for this resume",
-                value=st.session_state.save_as_name,
                 key="save_as_name",
                 help="Your resume will be saved as 'name.json' in the resume_json folder"
             )
@@ -113,7 +154,6 @@ class ResumeUI:
                     st.session_state.current_resume_name = filename
                     st.session_state.is_new_resume = False
                     self._save_resume(data, filename)
-                    st.session_state.save_as_name = ''  # Clear after save
     
     def _save_resume(self, data: Dict, filename: str):
         """Internal method to save resume data."""
